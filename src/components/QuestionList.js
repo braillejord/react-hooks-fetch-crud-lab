@@ -9,13 +9,21 @@ function QuestionList({ questions, setQuestions }) {
       .then(data => setQuestions(data))
   }, [])
 
-  function onDelete(id) {
-    fetch(`http://localhost:4000/questions/${id}`, {
-      method: 'DELETE'
-    })
+  function deleteQuestion(id) {
     const updatedQuestions = questions.filter((question) => {
       if (question.id !== id) {
         return true;
+      }
+    })
+    setQuestions(updatedQuestions)
+  }
+
+  function onAnswerChange(updatedQuestion) {
+    const updatedQuestions = questions.map((question) => {
+      if (question.id === updatedQuestion.id) {
+        return updatedQuestion;
+      } else {
+        return question;
       }
     })
     setQuestions(updatedQuestions)
@@ -32,7 +40,9 @@ function QuestionList({ questions, setQuestions }) {
             prompt={question.prompt}
             answers={question.answers}
             correctIndex={question.correctIndex}
-            onDelete={onDelete} />
+            deleteQuestion={deleteQuestion}
+            changeAnswer={onAnswerChange}
+          />
         ))
         }
       </ul>

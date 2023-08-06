@@ -1,14 +1,25 @@
 import React, { useState, useEffect } from "react";
 import QuestionItem from "./QuestionItem";
 
-function QuestionList() {
-  const [questions, setQuestions] = useState([])
+function QuestionList({ questions, setQuestions }) {
 
   useEffect(() => {
     fetch('http://localhost:4000/questions')
       .then(r => r.json())
       .then(data => setQuestions(data))
   }, [])
+
+  function onDelete(id) {
+    fetch(`http://localhost:4000/questions/${id}`, {
+      method: 'DELETE'
+    })
+    const updatedQuestions = questions.filter((question) => {
+      if (question.id !== id) {
+        return true;
+      }
+    })
+    setQuestions(updatedQuestions)
+  }
 
   return (
     <section>
@@ -20,7 +31,8 @@ function QuestionList() {
             id={question.id}
             prompt={question.prompt}
             answers={question.answers}
-            correctIndex={question.correctIndex} />
+            correctIndex={question.correctIndex}
+            onDelete={onDelete} />
         ))
         }
       </ul>
